@@ -5,3 +5,4 @@ edition = "2024"
 
 [dependencies]
 bevy = { version = "0.15" }
+avian2d = "0.2"
