@@ -20,10 +20,10 @@ fn setup_environment(
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
     let diamond_mesh = meshes.add(tile_mesh(TILE_WIDTH, TILE_HEIGHT));
-    let diamond_mat = materials.add(ColorMaterial::from(Color::srgb(0.2, 0.7, 0.9)));
+    let diamond_mat = materials.add(ColorMaterial::from(Color::srgb(0.5, 0.7, 0.9)));
 
-    for x in -2..=2 {
-        for y in -2..=2 {
+    for x in -10..=10 {
+        for y in -10..=10 {
             let iso_x = (x - y) as f32 * (TILE_WIDTH / 2.0);
             let iso_y = (x + y) as f32 * (TILE_HEIGHT / 2.0);
 
@@ -32,7 +32,7 @@ fn setup_environment(
                 MeshMaterial2d(diamond_mat.clone()),
                 Transform::from_translation(Vec3::new(iso_x, iso_y, 0.0)),
                 GlobalTransform::default(),
-                EnvironmentEntity,
+                EnvironmentComponent,
             ));
         }
     }
