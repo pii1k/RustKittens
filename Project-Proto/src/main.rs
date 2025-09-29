@@ -1,6 +1,8 @@
 use Project_Proto::GamePlugin;
 use avian2d::prelude::*;
 use bevy::prelude::*;
+use bevy_egui::EguiPlugin;
+use bevy_inspector_egui::DefaultInspectorConfigPlugin;
 
 fn main() {
     App::new()
@@ -15,6 +17,8 @@ fn main() {
             ..default()
         }))
         .add_plugins(PhysicsPlugins::default())
+        .add_plugins(EguiPlugin)
+        .add_plugins(DefaultInspectorConfigPlugin)
         .add_plugins(GamePlugin)
         .add_systems(Startup, setup_camera)
         .run();
