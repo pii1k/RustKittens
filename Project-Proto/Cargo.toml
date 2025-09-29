@@ -8,6 +8,7 @@ bevy = { version = "0.15" }
 avian2d = "0.2"
 bevy_egui = "0.33.0"
 bevy-inspector-egui = "0.30.0"
+egui_dock = "0.16.0"
 
 [profile.dev]
 opt-level = 1
