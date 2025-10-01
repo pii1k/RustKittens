@@ -1,5 +1,6 @@
 use bevy::{
     prelude::*,
+    window::PrimaryWindow,
     winit::cursor::{CursorIcon, CustomCursor},
 };
 
@@ -19,7 +20,8 @@ impl Plugin for PlayerPlugin {
             .add_systems(
                 PostUpdate,
                 update_cursor_world_position.after(TransformSystem::TransformPropagate),
-            );
+            )
+            .add_systems(Last, force_custom_cursor_silent);
     }
 }
 
@@ -39,7 +41,7 @@ fn spawn_player(mut commands: Commands) {
 fn setup_cursor(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    window: Single<Entity, With<Window>>,
+    window: Single<Entity, With<PrimaryWindow>>,
 ) {
     commands
         .entity(*window)
@@ -49,6 +51,20 @@ fn setup_cursor(
         }));
 }
 
+fn force_custom_cursor_silent(
+    asset_server: Res<AssetServer>,
+    mut windows: Query<&mut CursorIcon, With<Window>>,
+) {
+    for mut cursor_icon in windows.iter_mut() {
+        // bypass_change_detection으로 Change 이벤트 없이 설정
+        if !matches!(*cursor_icon.as_ref(), CursorIcon::Custom(_)) {
+            *cursor_icon.bypass_change_detection() = CursorIcon::Custom(CustomCursor::Image {
+                handle: asset_server.load("cursor/crosshair019.png"),
+                hotspot: (16, 16),
+            });
+        }
+    }
+}
 fn move_player(
     keyboard_input: Res<ButtonInput<KeyCode>>,
     mut player_transform: Single<&mut Transform, With<Player>>,
@@ -79,13 +95,12 @@ fn move_player(
 
 fn update_cursor_world_position(
     mut cursor_coords: ResMut<CursorCoords>,
-    q_window: Query<&Window, With<Window>>,
+    q_window: Single<&Window, With<PrimaryWindow>>,
     q_camera: Single<(&Camera, &GlobalTransform), With<Camera2d>>,
 ) {
     let (camera, camera_transform) = *q_camera;
-    let window = q_window.single();
 
-    if let Some(cursor_pos) = window.cursor_position() {
+    if let Some(cursor_pos) = q_window.cursor_position() {
         cursor_coords.0 = camera
             .viewport_to_world_2d(camera_transform, cursor_pos)
             .unwrap_or(Vec2::ZERO);

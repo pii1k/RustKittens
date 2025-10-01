@@ -11,7 +11,7 @@ fn main() {
                 title: "Project: Proto".into(),
                 resolution: (1920.0, 1080.0).into(),
                 resizable: false,
-                mode: bevy::window::WindowMode::BorderlessFullscreen(MonitorSelection::Primary),
+                mode: bevy::window::WindowMode::Windowed,
                 ..default()
             }),
             ..default()
