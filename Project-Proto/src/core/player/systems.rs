@@ -44,8 +44,8 @@ fn setup_cursor(
     commands
         .entity(*window)
         .insert(CursorIcon::Custom(CustomCursor::Image {
-            handle: asset_server.load("cursor/crosshair019.png"),
-            hotspot: (0, 0),
+            handle: asset_server.load("cursor/crosshair001.png"),
+            hotspot: (16, 16),
         }));
 }
 
@@ -63,14 +63,15 @@ fn move_player(
         direction.x += 1.0;
     }
     if keyboard_input.pressed(KeyCode::ArrowUp) || keyboard_input.pressed(KeyCode::KeyW) {
-        direction.y += 0.5;
+        direction.y += 1.0;
     }
     if keyboard_input.pressed(KeyCode::ArrowDown) || keyboard_input.pressed(KeyCode::KeyS) {
-        direction.y -= 0.5;
+        direction.y -= 1.0;
     }
 
     if direction != Vec2::ZERO {
         direction = direction.normalize();
+        direction.y /= 2.0;
     }
 
     let movement = direction * PLAYER_SPEED * time.delta_secs();
