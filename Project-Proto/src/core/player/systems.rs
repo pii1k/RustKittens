@@ -4,7 +4,7 @@ use bevy::{
     winit::cursor::{CursorIcon, CustomCursor},
 };
 
-use crate::core::player::components::CursorCoords;
+use crate::core::player::components::{CursorAsset, CursorCoords};
 
 use super::components::{Player, PlayerPlugin};
 
@@ -15,8 +15,11 @@ const PLAYER_COLOR: Color = Color::srgb(0.3, 0.3, 0.3);
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(CursorCoords::default())
-            .add_systems(Startup, (spawn_player, setup_cursor))
-            .add_systems(Update, (move_player, aim_at_cursor, shoot))
+            .add_systems(Startup, (spawn_player, load_cursor_asset))
+            .add_systems(
+                Update,
+                (setup_cursor_after_loaded, move_player, aim_at_cursor, shoot),
+            )
             .add_systems(
                 PostUpdate,
                 update_cursor_world_position.after(TransformSystem::TransformPropagate),
@@ -38,17 +41,32 @@ fn spawn_player(mut commands: Commands) {
     ));
 }
 
-fn setup_cursor(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    window: Single<Entity, With<PrimaryWindow>>,
+fn load_cursor_asset(mut commands: Commands, asset_server: Res<AssetServer>) {
+    let cursor_asset: Handle<Image> = asset_server.load("cursor/crosshair001.png");
+    commands.insert_resource(CursorAsset {
+        handle: cursor_asset,
+        is_set: false,
+    });
+}
+
+fn setup_cursor_after_loaded(
+    mut cursor_asset: ResMut<CursorAsset>,
+    window: Single<&mut CursorIcon, With<PrimaryWindow>>,
+    assets: Res<Assets<Image>>,
 ) {
-    commands
-        .entity(*window)
-        .insert(CursorIcon::Custom(CustomCursor::Image {
-            handle: asset_server.load("cursor/crosshair019.png"),
-            hotspot: (0, 0),
-        }));
+    if cursor_asset.is_set {
+        return;
+    }
+
+    if assets.get(&cursor_asset.handle).is_some() {
+        let mut cursor_icon = window.into_inner();
+
+        *cursor_icon = CursorIcon::Custom(CustomCursor::Image {
+            handle: cursor_asset.handle.clone(),
+            hotspot: (16, 16),
+        });
+        cursor_asset.is_set = true;
+    }
 }
 
 fn force_custom_cursor_silent(
