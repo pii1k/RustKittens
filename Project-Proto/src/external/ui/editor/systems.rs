@@ -11,13 +11,17 @@ use super::components::*;
 
 impl Plugin for EditorPlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource(UiState::new()).add_systems(
-            PostUpdate,
-            show_ui_system
-                .before(EguiPostUpdateSet::ProcessOutput)
-                .before(bevy_egui::end_pass_system)
-                .before(bevy::transform::TransformSystem::TransformPropagate),
-        );
+        app.insert_resource(UiState::new())
+            .init_resource::<InspectorEnabled>()
+            .add_systems(Update, toggle_inspector)
+            .add_systems(
+                PostUpdate,
+                show_ui_system
+                    .before(EguiPostUpdateSet::ProcessOutput)
+                    .before(bevy_egui::end_pass_system)
+                    .before(bevy::transform::TransformSystem::TransformPropagate)
+                    .run_if(should_show_inspector),
+            );
     }
 }
 
@@ -191,4 +195,14 @@ fn select_asset(
             }
         });
     }
+}
+
+fn toggle_inspector(keyboard: Res<ButtonInput<KeyCode>>, mut inspector: ResMut<InspectorEnabled>) {
+    if keyboard.just_pressed(KeyCode::F1) {
+        inspector.enabled = !inspector.enabled;
+    }
+}
+
+fn should_show_inspector(show: Res<InspectorEnabled>) -> bool {
+    show.enabled
 }

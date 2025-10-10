@@ -37,3 +37,8 @@ pub struct TabViewer<'a> {
     pub selection: &'a mut InspectorSelection,
     pub viewport_rect: &'a mut egui::Rect,
 }
+
+#[derive(Resource, Default)]
+pub struct InspectorEnabled {
+    pub enabled: bool,
+}
