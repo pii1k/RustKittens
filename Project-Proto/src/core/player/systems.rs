@@ -3,6 +3,8 @@ use bevy::{
     winit::cursor::{CursorIcon, CustomCursor},
 };
 
+use crate::core::camera::components::{StickedCameraComponent, StickedTargetComponent};
+use crate::core::camera::CameraSystemSet;
 use crate::core::player::components::CursorCoords;
 
 use super::components::{Player, PlayerPlugin};
@@ -14,7 +16,10 @@ const PLAYER_COLOR: Color = Color::srgb(0.3, 0.3, 0.3);
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(CursorCoords::default())
-            .add_systems(Startup, (spawn_player, setup_cursor))
+            .add_systems(
+                Startup,
+                (spawn_player.after(CameraSystemSet::CameraSetup), setup_cursor),
+            )
             .add_systems(Update, (move_player, aim_at_cursor, shoot))
             .add_systems(
                 PostUpdate,
@@ -23,17 +28,23 @@ impl Plugin for PlayerPlugin {
     }
 }
 
-fn spawn_player(mut commands: Commands) {
-    commands.spawn((
-        Name::new("Player"),
-        Sprite::from_color(PLAYER_COLOR, Vec2::ONE),
-        Transform {
-            translation: Vec3::new(0.0, 0.0, 0.0),
-            scale: PLAYER_SIZE.extend(1.0),
-            ..default()
-        },
-        Player,
-    ));
+fn spawn_player(mut commands: Commands, mut q: Query<&mut StickedCameraComponent, With<Camera2d>>) {
+    let id = commands
+        .spawn((
+            Name::new("Player"),
+            Sprite::from_color(PLAYER_COLOR, Vec2::ONE),
+            Transform {
+                translation: Vec3::new(0.0, 0.0, 0.0),
+                scale: PLAYER_SIZE.extend(1.0),
+                ..default()
+            },
+            Player,
+        ))
+        .insert(StickedTargetComponent)
+        .id();
+    let mut cam = q.single_mut();
+    cam.is_sticked = true;
+    cam.target_index = id.index();
 }
 
 fn setup_cursor(
