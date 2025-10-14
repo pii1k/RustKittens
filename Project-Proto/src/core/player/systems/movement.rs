@@ -1,13 +1,23 @@
 use bevy::prelude::*;
 
-use crate::{common::animation::components::AnimationController, core::player::components::Player};
+use crate::{
+    common::animation::components::AnimationController,
+    core::player::components::{Player, PlayerState},
+};
 
 const PLAYER_SPEED: f32 = 150.0;
 
 pub fn move_player(
     time: Res<Time>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
-    q_player: Single<(&mut Transform, &mut AnimationController), With<Player>>,
+    q_player: Single<
+        (
+            &mut Player,
+            &mut Transform,
+            &mut AnimationController<PlayerState>,
+        ),
+        With<Player>,
+    >,
 ) {
     let mut direction = Vec2::new(0.0, 0.0);
 
@@ -24,7 +34,9 @@ pub fn move_player(
         direction.y -= 1.0;
     }
 
-    let (mut player_transform, mut anim_controller) = q_player.into_inner();
+    let (mut player, mut player_transform, mut anim_controller) = q_player.into_inner();
+
+    player.velocity = direction.normalize_or_zero();
 
     if direction != Vec2::ZERO {
         direction = direction.normalize();

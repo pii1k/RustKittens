@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::{
     common::animation::components::{AnimationController, Direction8},
-    core::player::components::Player,
+    core::player::components::{Player, PlayerState},
 };
 
 const CURSOR_DISPLACEMENT: f32 = 5.0;
@@ -10,7 +10,7 @@ const CURSOR_DISPLACEMENT: f32 = 5.0;
 pub fn aim_at_cursor(
     q_window: Query<&Window, With<Window>>,
     q_camera: Single<(&Camera, &GlobalTransform), With<Camera2d>>,
-    q_player: Single<(&Transform, &mut AnimationController), With<Player>>,
+    q_player: Single<(&Transform, &mut AnimationController<PlayerState>), With<Player>>,
 ) {
     let window = q_window.single();
     let (camera, camera_transform) = *q_camera;
