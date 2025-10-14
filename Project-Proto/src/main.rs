@@ -1,6 +1,6 @@
-use Project_Proto::GamePlugin;
 use avian2d::prelude::*;
 use bevy::prelude::*;
+use project_proto::GamePlugin;
 
 fn main() {
     App::new()
