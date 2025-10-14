@@ -3,8 +3,6 @@ use bevy::{
     winit::cursor::{CursorIcon, CustomCursor},
 };
 
-use crate::common::cursor::components::CursorPlugin;
-
 pub fn setup_cursor(
     mut commands: Commands,
     asset_server: Res<AssetServer>,

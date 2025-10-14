@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-pub struct PlayerPlugin;
+use crate::common::animation::components::AnimationState;
 
 #[derive(Component)]
 pub struct Player {
@@ -14,4 +14,15 @@ pub enum PlayerState {
     Walk,
     Attack,
     Hurt,
+}
+
+impl AnimationState for PlayerState {
+    fn clip_name(&self) -> &str {
+        match self {
+            PlayerState::Idle => "idle",
+            PlayerState::Walk => "walk",
+            PlayerState::Attack => "attack",
+            PlayerState::Hurt => "hurt",
+        }
+    }
 }

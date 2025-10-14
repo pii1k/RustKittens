@@ -2,46 +2,7 @@ use std::time::Duration;
 
 use bevy::prelude::*;
 
-use crate::common::animation::components::{
-    AnimationController, AnimationSet, AnimationState, Direction8,
-};
-
-impl<S: AnimationState> AnimationController<S> {
-    pub fn new(initial_state: S, direction: Direction8) -> Self {
-        Self {
-            state: initial_state,
-            direction,
-            current_frame: 0,
-            frame_timer: Timer::from_seconds(0.1, TimerMode::Repeating),
-        }
-    }
-}
-
-impl Direction8 {
-    pub fn from_velocity(velocity: Vec2) -> Self {
-        if velocity.length() < 0.01 {
-            return Direction8::South;
-        }
-
-        let angle = velocity.y.atan2(velocity.x);
-        let degrees = angle.to_degrees();
-
-        let normalized = (degrees + 22.5) / 45.0;
-        let idx = ((normalized.floor() as i32 + 8) % 8) as usize;
-
-        match idx {
-            0 => Self::East,      // 0°
-            1 => Self::NorthEast, // 45°
-            2 => Self::North,     // 90°
-            3 => Self::NorthWest, // 135°
-            4 => Self::West,      // 180°
-            5 => Self::SouthWest, // 225°
-            6 => Self::South,     // 270°
-            7 => Self::SouthEast, // 315°
-            _ => Self::South,
-        }
-    }
-}
+use crate::common::animation::components::{AnimationController, AnimationSet, AnimationState};
 
 pub fn handle_animation_state_change<S: AnimationState>(
     mut query: Query<

@@ -5,16 +5,10 @@ use bevy::{
 
 use super::components::*;
 
-impl Plugin for EnvironmentPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_environment);
-    }
-}
-
 const TILE_WIDTH: f32 = 640.0;
 const TILE_HEIGHT: f32 = 320.0;
 
-fn setup_environment(
+pub fn setup_environment(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
