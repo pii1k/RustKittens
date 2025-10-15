@@ -1,13 +1,16 @@
 use bevy::prelude::*;
 
-use crate::common::cursor::systems::setup_cursor;
+use components::*;
+use systems::*;
 
+pub mod components;
 mod systems;
 
 pub struct CursorPlugin;
 
 impl Plugin for CursorPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_cursor);
+        app.insert_resource(CustomCursorIcon::default())
+            .add_systems(PostStartup, setup_cursor);
     }
 }

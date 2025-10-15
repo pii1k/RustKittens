@@ -1,17 +1,9 @@
 use bevy::prelude::*;
 
-use crate::{
-    common::animation::systems::{animate_sprites, handle_animation_state_change},
-    core::player::{
-        components::PlayerState,
-        systems::{
-            animation::update_player_state,
-            combat::{aim_at_cursor, shoot},
-            life_cycle::spawn_player,
-            movement::move_player,
-        },
-    },
-};
+use crate::common::animation::systems::{animate_sprites, handle_animation_state_change};
+
+use components::*;
+use systems::{animation::*, combat::*, life_cycle::*, movement::*};
 
 pub mod components;
 mod systems;

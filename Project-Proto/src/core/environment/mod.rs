@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::core::environment::systems::setup_environment;
+use systems::*;
 
 pub mod components;
 mod systems;

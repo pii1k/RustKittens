@@ -8,11 +8,21 @@ pub struct Player {
     pub health: f32,
 }
 
-#[derive(Resource, Default)]
-pub struct CursorAsset {
-    pub image_handle: Handle<Image>,
-    pub is_set: bool,
+#[derive(Component, Clone, PartialEq, Eq, Hash)]
+pub enum PlayerState {
+    Idle,
+    Walk,
+    Attack,
+    Hurt,
 }
 
-#[derive(Resource, Default)]
-pub struct CursorCoords(pub Vec2);
+impl AnimationState for PlayerState {
+    fn clip_name(&self) -> &str {
+        match self {
+            PlayerState::Idle => "idle",
+            PlayerState::Walk => "walk",
+            PlayerState::Attack => "attack",
+            PlayerState::Hurt => "hurt",
+        }
+    }
+}
