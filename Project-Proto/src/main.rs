@@ -1,5 +1,6 @@
 use avian2d::prelude::*;
 use bevy::prelude::*;
+use bevy_egui::EguiPlugin;
 use project_proto::GamePlugin;
 
 fn main() {
@@ -19,6 +20,7 @@ fn main() {
                 .set(ImagePlugin::default_nearest()),
         )
         .add_plugins(PhysicsPlugins::default())
+        .add_plugins(EguiPlugin)
         .add_plugins(GamePlugin)
         .add_systems(Startup, setup_camera)
         .run();
