@@ -50,4 +50,4 @@ jobs:
         with:
           components: rustfmt
       - name: Run cargo fmt
-        run: cargo fmt --all -- --check
+        run: cd Project-Proto && cargo fmt --all -- --check
