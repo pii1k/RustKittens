@@ -15,7 +15,7 @@ const PLAYER_COLOR: Color = Color::srgb(0.3, 0.3, 0.3);
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(CursorCoords::default())
-            .add_systems(Startup, (spawn_player, load_cursor_asset))
+            .add_systems(Startup, (spawn_player, setup_cursor))
             .add_systems(
                 Update,
                 (setup_cursor_after_loaded, move_player, aim_at_cursor, shoot),
@@ -55,19 +55,19 @@ fn setup_cursor(
 }
 
 fn setup_cursor_after_loaded(
-    mut cursor_asset: ResMut<CursorAsset>,
     window: Single<&mut CursorIcon, With<PrimaryWindow>>,
     assets: Res<Assets<Image>>,
+    mut cursor_asset: ResMut<CursorAsset>,
 ) {
     if cursor_asset.is_set {
         return;
     }
 
-    if assets.get(&cursor_asset.handle).is_some() {
+    if assets.get(&cursor_asset.image_handle).is_some() {
         let mut cursor_icon = window.into_inner();
 
         *cursor_icon = CursorIcon::Custom(CustomCursor::Image {
-            handle: cursor_asset.handle.clone(),
+            handle: cursor_asset.image_handle.clone(),
             hotspot: (16, 16),
         });
         cursor_asset.is_set = true;

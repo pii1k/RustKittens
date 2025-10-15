@@ -1,8 +1,8 @@
 use bevy::{asset::ReflectAsset, prelude::*, reflect::TypeRegistry, window::PrimaryWindow};
-use bevy_egui::{EguiContext, EguiPostUpdateSet, egui};
+use bevy_egui::{egui, EguiContext, EguiPostUpdateSet};
 use bevy_inspector_egui::bevy_inspector::{
     self,
-    hierarchy::{SelectedEntities, hierarchy_ui},
+    hierarchy::{hierarchy_ui, SelectedEntities},
     ui_for_entities_shared_components, ui_for_entity_with_children,
 };
 use egui_dock::{DockArea, DockState, NodeIndex, Style};
