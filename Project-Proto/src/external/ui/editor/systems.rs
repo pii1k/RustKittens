@@ -186,7 +186,7 @@ fn select_asset(
                 };
 
                 if ui
-                    .selectable_label(selected, format!("{:?}", handle))
+                    .selectable_label(selected, format!("{handle:?}"))
                     .clicked()
                 {
                     *selection =
