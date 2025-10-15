@@ -5,7 +5,7 @@ pub struct PlayerPlugin;
 #[derive(Component)]
 pub struct Player;
 
-#[derive(Resource)]
+#[derive(Resource, Default)]
 pub struct CursorAsset {
     pub image_handle: Handle<Image>,
     pub is_set: bool,

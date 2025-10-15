@@ -1,8 +1,8 @@
 use bevy::{asset::ReflectAsset, prelude::*, reflect::TypeRegistry, window::PrimaryWindow};
-use bevy_egui::{egui, EguiContext, EguiPostUpdateSet};
+use bevy_egui::{EguiContext, EguiPostUpdateSet, egui};
 use bevy_inspector_egui::bevy_inspector::{
     self,
-    hierarchy::{hierarchy_ui, SelectedEntities},
+    hierarchy::{SelectedEntities, hierarchy_ui},
     ui_for_entities_shared_components, ui_for_entity_with_children,
 };
 use egui_dock::{DockArea, DockState, NodeIndex, Style};
@@ -186,7 +186,7 @@ fn select_asset(
                 };
 
                 if ui
-                    .selectable_label(selected, format!("{:?}", handle))
+                    .selectable_label(selected, format!("{handle:?}"))
                     .clicked()
                 {
                     *selection =

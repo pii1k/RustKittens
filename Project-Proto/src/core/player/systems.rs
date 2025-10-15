@@ -15,6 +15,7 @@ const PLAYER_COLOR: Color = Color::srgb(0.3, 0.3, 0.3);
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(CursorCoords::default())
+            .insert_resource(CursorAsset::default())
             .add_systems(Startup, (spawn_player, setup_cursor))
             .add_systems(
                 Update,
