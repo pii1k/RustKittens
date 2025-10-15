@@ -1,9 +1,10 @@
 use bevy::{
     prelude::*,
+    window::PrimaryWindow,
     winit::cursor::{CursorIcon, CustomCursor},
 };
 
-use crate::core::player::components::CursorCoords;
+use crate::core::player::components::{CursorAsset, CursorCoords};
 
 use super::components::{Player, PlayerPlugin};
 
@@ -14,12 +15,16 @@ const PLAYER_COLOR: Color = Color::srgb(0.3, 0.3, 0.3);
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(CursorCoords::default())
-            .add_systems(Startup, (spawn_player, setup_cursor))
-            .add_systems(Update, (move_player, aim_at_cursor, shoot))
+            .add_systems(Startup, (spawn_player, load_cursor_asset))
+            .add_systems(
+                Update,
+                (setup_cursor_after_loaded, move_player, aim_at_cursor, shoot),
+            )
             .add_systems(
                 PostUpdate,
                 update_cursor_world_position.after(TransformSystem::TransformPropagate),
-            );
+            )
+            .add_systems(Last, force_custom_cursor_silent);
     }
 }
 
@@ -49,6 +54,40 @@ fn setup_cursor(
         }));
 }
 
+fn setup_cursor_after_loaded(
+    mut cursor_asset: ResMut<CursorAsset>,
+    window: Single<&mut CursorIcon, With<PrimaryWindow>>,
+    assets: Res<Assets<Image>>,
+) {
+    if cursor_asset.is_set {
+        return;
+    }
+
+    if assets.get(&cursor_asset.handle).is_some() {
+        let mut cursor_icon = window.into_inner();
+
+        *cursor_icon = CursorIcon::Custom(CustomCursor::Image {
+            handle: cursor_asset.handle.clone(),
+            hotspot: (16, 16),
+        });
+        cursor_asset.is_set = true;
+    }
+}
+
+fn force_custom_cursor_silent(
+    asset_server: Res<AssetServer>,
+    mut windows: Query<&mut CursorIcon, With<Window>>,
+) {
+    for mut cursor_icon in windows.iter_mut() {
+        // bypass_change_detection으로 Change 이벤트 없이 설정
+        if !matches!(*cursor_icon.as_ref(), CursorIcon::Custom(_)) {
+            *cursor_icon.bypass_change_detection() = CursorIcon::Custom(CustomCursor::Image {
+                handle: asset_server.load("cursor/crosshair019.png"),
+                hotspot: (16, 16),
+            });
+        }
+    }
+}
 fn move_player(
     keyboard_input: Res<ButtonInput<KeyCode>>,
     mut player_transform: Single<&mut Transform, With<Player>>,
@@ -80,13 +119,12 @@ fn move_player(
 
 fn update_cursor_world_position(
     mut cursor_coords: ResMut<CursorCoords>,
-    q_window: Query<&Window, With<Window>>,
+    q_window: Single<&Window, With<PrimaryWindow>>,
     q_camera: Single<(&Camera, &GlobalTransform), With<Camera2d>>,
 ) {
     let (camera, camera_transform) = *q_camera;
-    let window = q_window.single();
 
-    if let Some(cursor_pos) = window.cursor_position() {
+    if let Some(cursor_pos) = q_window.cursor_position() {
         cursor_coords.0 = camera
             .viewport_to_world_2d(camera_transform, cursor_pos)
             .unwrap_or(Vec2::ZERO);
