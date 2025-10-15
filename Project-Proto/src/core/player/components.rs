@@ -7,7 +7,7 @@ pub struct Player;
 
 #[derive(Resource)]
 pub struct CursorAsset {
-    pub handle: Handle<Image>,
+    pub image_handle: Handle<Image>,
     pub is_set: bool,
 }
 
