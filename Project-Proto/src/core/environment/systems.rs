@@ -11,8 +11,8 @@ impl Plugin for EnvironmentPlugin {
     }
 }
 
-const TILE_WIDTH: f32 = 64.0;
-const TILE_HEIGHT: f32 = 32.0;
+const TILE_WIDTH: f32 = 640.0;
+const TILE_HEIGHT: f32 = 320.0;
 
 fn setup_environment(
     mut commands: Commands,
@@ -22,8 +22,8 @@ fn setup_environment(
     let diamond_mesh = meshes.add(tile_mesh(TILE_WIDTH, TILE_HEIGHT));
     let diamond_mat = materials.add(ColorMaterial::from(Color::srgb(0.5, 0.7, 0.9)));
 
-    for x in -10..=10 {
-        for y in -10..=10 {
+    for x in -1..=1 {
+        for y in -1..=1 {
             let iso_x = (x - y) as f32 * (TILE_WIDTH / 2.0);
             let iso_y = (x + y) as f32 * (TILE_HEIGHT / 2.0);
 
