@@ -1,12 +1,10 @@
-use bevy::prelude::*;
-
-use crate::common::animation::systems::{animate_sprites, handle_animation_state_change};
-
-use components::*;
-use systems::{animation::*, combat::*, life_cycle::*, movement::*};
-
 pub mod components;
 mod systems;
+
+use crate::common::animation::systems::{animate_sprites, handle_animation_state_change};
+use bevy::prelude::*;
+use components::*;
+use systems::{animation::*, combat::*, life_cycle::*, movement::*};
 
 pub struct PlayerPlugin;
 impl Plugin for PlayerPlugin {
