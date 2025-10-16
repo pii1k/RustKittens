@@ -2,14 +2,11 @@ use std::time::Duration;
 
 use bevy::prelude::*;
 
-use crate::common::animation::components::{AnimationController, AnimationSet, AnimationState};
+use crate::common::animation::components::{
+    AnimationChangedQuery, AnimationController, AnimationSet, AnimationState,
+};
 
-pub fn handle_animation_state_change<S: AnimationState>(
-    mut query: Query<
-        (&AnimationSet, &mut AnimationController<S>, &mut Sprite),
-        Changed<AnimationController<S>>,
-    >,
-) {
+pub fn handle_animation_state_change<S: AnimationState>(mut query: AnimationChangedQuery<S>) {
     for (anim_set, mut anim_controller, mut sprite) in &mut query {
         let clip_name = anim_controller.state.clip_name();
         let Some(clip) = anim_set.get_clip(clip_name) else {

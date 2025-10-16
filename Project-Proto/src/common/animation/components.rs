@@ -30,6 +30,17 @@ pub struct AnimationClip {
     pub looping: bool,
 }
 
+pub type AnimationChangedQuery<'w, 's, S> = Query<
+    'w,
+    's,
+    (
+        &'static AnimationSet,
+        &'static mut AnimationController<S>,
+        &'static mut Sprite,
+    ),
+    Changed<AnimationController<S>>,
+>;
+
 #[derive(Component, Clone)]
 pub struct AnimationSet {
     pub clips: HashMap<String, AnimationClip>,

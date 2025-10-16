@@ -12,7 +12,6 @@ pub struct Player {
 pub enum PlayerState {
     Idle,
     Walk,
-    Attack,
     Hurt,
 }
 
@@ -21,7 +20,6 @@ impl AnimationState for PlayerState {
         match self {
             PlayerState::Idle => "idle",
             PlayerState::Walk => "walk",
-            PlayerState::Attack => "attack",
             PlayerState::Hurt => "hurt",
         }
     }

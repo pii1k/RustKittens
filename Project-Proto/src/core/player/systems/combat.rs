@@ -15,16 +15,16 @@ pub fn aim_at_cursor(
     let window = q_window.single();
     let (camera, camera_transform) = *q_camera;
 
-    if let Some(cursor_pos) = window.cursor_position() {
-        if let Ok(cursor_world_pos) = camera.viewport_to_world_2d(camera_transform, cursor_pos) {
-            let (transform, mut anim_controller) = q_player.into_inner();
+    if let Some(cursor_pos) = window.cursor_position()
+        && let Ok(cursor_world_pos) = camera.viewport_to_world_2d(camera_transform, cursor_pos)
+    {
+        let (transform, mut anim_controller) = q_player.into_inner();
 
-            let player_pos = transform.translation.truncate();
-            let dir_to_cursor = cursor_world_pos - player_pos;
+        let player_pos = transform.translation.truncate();
+        let dir_to_cursor = cursor_world_pos - player_pos;
 
-            if dir_to_cursor.length() > CURSOR_DISPLACEMENT {
-                anim_controller.direction = Direction8::from_velocity(dir_to_cursor);
-            }
+        if dir_to_cursor.length() > CURSOR_DISPLACEMENT {
+            anim_controller.direction = Direction8::from_velocity(dir_to_cursor);
         }
     }
 }
