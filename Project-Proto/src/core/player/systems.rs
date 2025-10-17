@@ -5,7 +5,7 @@ use bevy::{
 };
 
 use crate::{
-    common::components::GameState,
+    core::ui::components::GameState,
     core::player::components::{CursorAsset, CursorCoords},
 };
 

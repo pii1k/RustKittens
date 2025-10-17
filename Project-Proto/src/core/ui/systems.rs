@@ -1,23 +1,8 @@
-use crate::common::components::GameState;
 use bevy::prelude::*;
 use bevy_egui::{EguiContexts, egui};
+use super::components::GameState;
 
-use super::components::UIPlugin;
-
-impl Plugin for UIPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_systems(
-            Update,
-            (
-                handle_menu_hotkeys,
-                main_menu_ui.run_if(in_state(GameState::MainMenu)),
-                pause_ui.run_if(in_state(GameState::Paused)),
-            ),
-        );
-    }
-}
-
-fn handle_menu_hotkeys(
+pub fn handle_menu_hotkeys(
     keys: Res<ButtonInput<KeyCode>>,
     state: Res<State<GameState>>,
     mut next_state: ResMut<NextState<GameState>>,
@@ -33,7 +18,7 @@ fn handle_menu_hotkeys(
     }
 }
 
-fn main_menu_ui(
+pub fn main_menu_ui(
     mut contexts: EguiContexts,
     mut next_state: ResMut<NextState<GameState>>,
     mut exit: EventWriter<AppExit>,
@@ -66,7 +51,7 @@ fn main_menu_ui(
     });
 }
 
-fn pause_ui(
+pub fn pause_ui(
     mut contexts: EguiContexts,
     mut next_state: ResMut<NextState<GameState>>,
     mut exit: EventWriter<AppExit>,
