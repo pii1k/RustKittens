@@ -10,7 +10,7 @@ fn main() {
                     primary_window: Some(Window {
                         title: "Project: Proto".into(),
                         resolution: (1920.0, 1080.0).into(),
-                        resizable: false,
+                        resizable: true,
                         mode: bevy::window::WindowMode::Windowed,
                         ..default()
                     }),
