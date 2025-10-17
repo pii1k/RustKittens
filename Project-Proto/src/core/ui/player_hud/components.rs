@@ -46,28 +46,20 @@ impl PlayerBodyState {
         }
     }
 
-    pub fn set_hp(&mut self, part: BodyPart, hp: f32) {
-        let hp = hp.clamp(0.0, 1.0);
-        match part {
-            BodyPart::Head => self.head_hp = hp,
-            BodyPart::Torso => self.torso_hp = hp,
-            BodyPart::Arms => self.arms_hp = hp,
-            BodyPart::Hands => self.hands_hp = hp,
-            BodyPart::Thighs => self.thighs_hp = hp,
-            BodyPart::Calves => self.calves_hp = hp,
-        }
-    }
-
     pub fn hp_to_color(&self, part: BodyPart) -> egui::Color32 {
         let hp = self.get_hp(part);
-        if hp > 0.7 {
-            egui::Color32::from_rgb(50, 200, 50) // 초록색 - 건강
-        } else if hp > 0.3 {
-            egui::Color32::from_rgb(230, 180, 50) // 노란색 - 부상
-        } else if hp > 0.0 {
-            egui::Color32::from_rgb(230, 50, 50) // 빨간색 - 위험
+        if hp <= 0.0 {
+            // 사망 - 진한 회색
+            egui::Color32::from_rgba_unmultiplied(60, 60, 60, 180)
+        } else if hp < 0.3 {
+            // 위험 - 빨간색
+            egui::Color32::from_rgba_unmultiplied(200, 50, 50, 200)
+        } else if hp < 0.7 {
+            // 부상 - 노란색
+            egui::Color32::from_rgba_unmultiplied(200, 180, 50, 200)
         } else {
-            egui::Color32::from_rgb(80, 80, 80) // 회색 - 사망
+            // 건강 - 흰색/밝은 회색
+            egui::Color32::from_rgba_unmultiplied(220, 220, 220, 20)
         }
     }
 }
