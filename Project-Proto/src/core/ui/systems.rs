@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use bevy_egui::{EguiContexts, egui};
-use super::components::GameState;
+use crate::core::ui::components::GameState;
 
 pub fn handle_menu_hotkeys(
     keys: Res<ButtonInput<KeyCode>>,
