@@ -4,7 +4,10 @@ use bevy::{
     winit::cursor::{CursorIcon, CustomCursor},
 };
 
-use crate::core::player::components::{CursorAsset, CursorCoords};
+use crate::{
+    core::player::components::{CursorAsset, CursorCoords},
+    core::ui::components::GameState,
+};
 
 use super::components::{Player, PlayerPlugin};
 
@@ -19,7 +22,8 @@ impl Plugin for PlayerPlugin {
             .add_systems(Startup, (spawn_player, setup_cursor))
             .add_systems(
                 Update,
-                (setup_cursor_after_loaded, move_player, aim_at_cursor, shoot),
+                (setup_cursor_after_loaded, move_player, aim_at_cursor, shoot)
+                    .run_if(in_state(GameState::InGame)),
             )
             .add_systems(
                 PostUpdate,
