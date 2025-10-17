@@ -5,8 +5,8 @@ use bevy::{
 };
 
 use crate::{
-    core::ui::components::GameState,
     core::player::components::{CursorAsset, CursorCoords},
+    core::ui::components::GameState,
 };
 
 use super::components::{Player, PlayerPlugin};

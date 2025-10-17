@@ -1,9 +1,9 @@
 pub mod components;
 mod systems;
 
+use crate::core::ui::systems::{handle_menu_hotkeys, main_menu_ui, pause_ui};
 use bevy::prelude::*;
 use components::GameState;
-use crate::core::ui::systems::{handle_menu_hotkeys, main_menu_ui, pause_ui};
 
 pub struct UIPlugin;
 impl Plugin for UIPlugin {

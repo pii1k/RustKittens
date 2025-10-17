@@ -6,7 +6,7 @@ use bevy::prelude::*;
 
 use environment::components::EnvironmentPlugin;
 use player::components::PlayerPlugin;
-use ui::{components::GameState, UIPlugin};
+use ui::{UIPlugin, components::GameState};
 
 pub fn plugin(app: &mut App) {
     app.init_state::<GameState>();
