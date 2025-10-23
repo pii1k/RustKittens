@@ -1,7 +1,10 @@
 use bevy::prelude::*;
 use bevy_egui::{EguiContexts, egui};
 
-use crate::core::ui::player_hud::{components::BodyPart, systems::draw_body::draw_body_figure};
+use crate::core::{
+    player::components::PlayerLifeStatus,
+    ui::player_hud::{components::BodyPart, systems::draw_body::draw_body_figure},
+};
 
 use super::super::components::PlayerBodyState;
 
@@ -40,21 +43,21 @@ pub fn player_hit_ui_system(mut contexts: EguiContexts, body_state: Res<PlayerBo
                         ("Calves", BodyPart::Calves),
                     ] {
                         let hp = body_state.get_hp(part);
-                        let status = if hp > 0.7 {
-                            "Healthy"
-                        } else if hp > 0.3 {
-                            "Injured"
-                        } else if hp > 0.0 {
-                            "Critical"
+                        let status = if hp > 70 {
+                            PlayerLifeStatus::Healthy
+                        } else if hp > 30 {
+                            PlayerLifeStatus::Injured
+                        } else if hp > 0 {
+                            PlayerLifeStatus::Critical
                         } else {
-                            "Destroyed"
+                            PlayerLifeStatus::Destroyed
                         };
 
                         ui.horizontal(|ui| {
                             ui.label(format!("{name:8}"));
-                            ui.label(format!("{:3.0}%", hp * 100.0));
+                            ui.label(format!("{hp}%"));
                             ui.label(
-                                egui::RichText::new(format!("[{status}]"))
+                                egui::RichText::new(format!("[{status:?}]"))
                                     .color(hp_to_status_color(hp)),
                             );
                         });
@@ -64,12 +67,12 @@ pub fn player_hit_ui_system(mut contexts: EguiContexts, body_state: Res<PlayerBo
         });
 }
 
-fn hp_to_status_color(hp: f32) -> egui::Color32 {
-    if hp > 0.7 {
+fn hp_to_status_color(hp: i32) -> egui::Color32 {
+    if hp > 70 {
         egui::Color32::from_rgb(100, 220, 100)
-    } else if hp > 0.3 {
+    } else if hp > 30 {
         egui::Color32::from_rgb(220, 200, 80)
-    } else if hp > 0.0 {
+    } else if hp > 0 {
         egui::Color32::from_rgb(220, 80, 80)
     } else {
         egui::Color32::from_rgb(120, 120, 120)

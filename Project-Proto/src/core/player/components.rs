@@ -9,18 +9,26 @@ pub struct Player {
 }
 
 #[derive(Component, Clone, PartialEq, Eq, Hash)]
-pub enum PlayerState {
+pub enum PlayerMovementState {
     Idle,
     Walk,
     Hurt,
 }
 
-impl AnimationState for PlayerState {
+impl AnimationState for PlayerMovementState {
     fn clip_name(&self) -> &str {
         match self {
-            PlayerState::Idle => "idle",
-            PlayerState::Walk => "walk",
-            PlayerState::Hurt => "hurt",
+            PlayerMovementState::Idle => "idle",
+            PlayerMovementState::Walk => "walk",
+            PlayerMovementState::Hurt => "hurt",
         }
     }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum PlayerLifeStatus {
+    Healthy,
+    Injured,
+    Critical,
+    Destroyed,
 }
