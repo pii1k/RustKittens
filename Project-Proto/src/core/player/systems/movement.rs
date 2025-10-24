@@ -45,6 +45,6 @@ pub fn move_player(
         let movement = direction * PLAYER_SPEED * time.delta_secs();
         player_transform.translation += movement.extend(0.0);
     } else {
-        anim_controller.current_frame = 0;
+        anim_controller.current_frame_idx = 0;
     }
 }
