@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::{
     common::animation::components::AnimationController,
-    core::player::components::{Player, PlayerState},
+    core::player::components::{Player, PlayerMovementState},
 };
 
 const PLAYER_SPEED: f32 = 150.0;
@@ -14,7 +14,7 @@ pub fn move_player(
         (
             &mut Player,
             &mut Transform,
-            &mut AnimationController<PlayerState>,
+            &mut AnimationController<PlayerMovementState>,
         ),
         With<Player>,
     >,
@@ -45,6 +45,6 @@ pub fn move_player(
         let movement = direction * PLAYER_SPEED * time.delta_secs();
         player_transform.translation += movement.extend(0.0);
     } else {
-        anim_controller.current_frame = 0;
+        anim_controller.current_frame_idx = 0;
     }
 }

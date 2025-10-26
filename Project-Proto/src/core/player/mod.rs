@@ -14,8 +14,8 @@ impl Plugin for PlayerPlugin {
                 Update,
                 (
                     update_player_state,
-                    handle_animation_state_change::<PlayerState>,
-                    animate_sprites::<PlayerState>,
+                    handle_animation_state_change::<PlayerMovementState>,
+                    animate_sprites::<PlayerMovementState>,
                 ),
             )
             .add_systems(Update, (aim_at_cursor, shoot, move_player));

@@ -11,6 +11,6 @@ pub struct CursorPlugin;
 impl Plugin for CursorPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(CustomCursorIcon::default())
-            .add_systems(PostStartup, setup_cursor);
+            .add_systems(PreStartup, setup_cursor);
     }
 }

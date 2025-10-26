@@ -21,7 +21,7 @@ pub fn handle_animation_state_change<S: AnimationState>(mut query: AnimationChan
                 index: 0,
             });
 
-            anim_controller.current_frame = 0;
+            anim_controller.current_frame_idx = 0;
             anim_controller.frame_timer.reset();
         }
     }
@@ -44,15 +44,15 @@ pub fn animate_sprites<S: AnimationState>(
 
         if anim_controller.frame_timer.just_finished() {
             if clip.looping {
-                anim_controller.current_frame =
-                    (anim_controller.current_frame + 1) % clip.frames_per_direction;
+                anim_controller.current_frame_idx =
+                    (anim_controller.current_frame_idx + 1) % clip.frames_per_direction;
             } else {
-                anim_controller.current_frame =
-                    (anim_controller.current_frame + 1).min(clip.frames_per_direction - 1);
+                anim_controller.current_frame_idx =
+                    (anim_controller.current_frame_idx + 1).min(clip.frames_per_direction - 1);
             }
 
             let row = anim_controller.direction as usize;
-            let idx = row * clip.frames_per_direction + anim_controller.current_frame;
+            let idx = row * clip.frames_per_direction + anim_controller.current_frame_idx;
 
             if let Some(ref mut atlas) = sprite.texture_atlas {
                 atlas.index = idx;

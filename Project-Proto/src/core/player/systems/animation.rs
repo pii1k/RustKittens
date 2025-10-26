@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::{
     common::animation::components::{AnimationClip, AnimationController, AnimationSet},
-    core::player::components::{Player, PlayerState},
+    core::player::components::{Player, PlayerMovementState},
 };
 
 pub fn setup_player_animation(
@@ -69,19 +69,19 @@ pub fn setup_player_animation(
 }
 
 pub fn update_player_state(
-    q_player: Single<(&Player, &mut AnimationController<PlayerState>), With<Player>>,
+    q_player: Single<(&Player, &mut AnimationController<PlayerMovementState>), With<Player>>,
 ) {
     let (player, mut anim_controller) = q_player.into_inner();
 
-    if player.health < 50.0 && anim_controller.state != PlayerState::Hurt {
-        anim_controller.state = PlayerState::Hurt;
+    if player.health < 50.0 && anim_controller.state != PlayerMovementState::Hurt {
+        anim_controller.state = PlayerMovementState::Hurt;
     }
 
     if player.velocity != Vec2::ZERO {
-        if anim_controller.state != PlayerState::Walk {
-            anim_controller.state = PlayerState::Walk;
+        if anim_controller.state != PlayerMovementState::Walk {
+            anim_controller.state = PlayerMovementState::Walk;
         }
-    } else if anim_controller.state != PlayerState::Idle {
-        anim_controller.state = PlayerState::Idle;
+    } else if anim_controller.state != PlayerMovementState::Idle {
+        anim_controller.state = PlayerMovementState::Idle;
     }
 }

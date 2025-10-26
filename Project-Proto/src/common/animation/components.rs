@@ -6,7 +6,7 @@ use bevy::{prelude::*, utils::HashMap};
 pub struct AnimationController<S: AnimationState> {
     pub state: S,
     pub frame_timer: Timer,
-    pub current_frame: usize,
+    pub current_frame_idx: usize,
     pub direction: Direction8,
 }
 
@@ -15,7 +15,7 @@ impl<S: AnimationState> AnimationController<S> {
         Self {
             state: initial_state,
             direction,
-            current_frame: 0,
+            current_frame_idx: 0,
             frame_timer: Timer::from_seconds(0.1, TimerMode::Repeating),
         }
     }

@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use crate::{
     common::animation::components::{AnimationController, Direction8},
     core::player::{
-        components::{Player, PlayerState},
+        components::{Player, PlayerMovementState},
         systems::animation::setup_player_animation,
     },
 };
@@ -29,7 +29,7 @@ pub fn spawn_player(
             ..default()
         },
         Transform::from_xyz(0.0, 0.0, 0.0).with_scale(Vec3::splat(PLAYER_SCALE)),
-        AnimationController::new(PlayerState::Idle, Direction8::South),
+        AnimationController::new(PlayerMovementState::Idle, Direction8::South),
         Player {
             velocity: Vec2::ZERO,
             health: 100.0,
