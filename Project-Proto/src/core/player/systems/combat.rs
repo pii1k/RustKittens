@@ -1,9 +1,7 @@
 use bevy::prelude::*;
 
-use crate::{
-    common::animation::components::{AnimationController, Direction8},
-    core::player::components::{Player, PlayerMovementState},
-};
+use super::super::components::*;
+use crate::common::animation::components::*;
 
 const CURSOR_DISPLACEMENT: f32 = 5.0;
 

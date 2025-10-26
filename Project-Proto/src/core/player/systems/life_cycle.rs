@@ -30,10 +30,7 @@ pub fn spawn_player(
         },
         Transform::from_xyz(0.0, 0.0, 0.0).with_scale(Vec3::splat(PLAYER_SCALE)),
         AnimationController::new(PlayerMovementState::Idle, Direction8::South),
-        Player {
-            velocity: Vec2::ZERO,
-            health: 100.0,
-        },
+        Player::default(),
         anim_set,
     ));
 }
