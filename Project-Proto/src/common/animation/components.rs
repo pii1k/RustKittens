@@ -103,4 +103,17 @@ impl Direction8 {
             _ => Self::South,
         }
     }
+
+    pub fn dir_to_vec2(direction: Direction8) -> Vec2 {
+        match direction {
+            Direction8::East => Vec2::new(1.0, 0.0),
+            Direction8::NorthEast => Vec2::new(1.0, 1.0).normalize(),
+            Direction8::North => Vec2::new(0.0, 1.0),
+            Direction8::NorthWest => Vec2::new(-1.0, 1.0).normalize(),
+            Direction8::West => Vec2::new(-1.0, 0.0),
+            Direction8::SouthWest => Vec2::new(-1.0, -1.0).normalize(),
+            Direction8::South => Vec2::new(0.0, -1.0),
+            Direction8::SouthEast => Vec2::new(1.0, -1.0).normalize(),
+        }
+    }
 }
