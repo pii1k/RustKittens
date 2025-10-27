@@ -20,10 +20,5 @@ fn main() {
         )
         .add_plugins(PhysicsPlugins::default())
         .add_plugins(GamePlugin)
-        .add_systems(Startup, setup_camera)
         .run();
-}
-
-fn setup_camera(mut commands: Commands) {
-    commands.spawn(Camera2d);
 }
