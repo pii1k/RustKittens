@@ -1,8 +1,17 @@
 [package]
-name = "Project-Proto"
+name = "project_proto"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-bevy = { version = "0.15" }
+bevy = { version = "0.15", features = ["custom_cursor"] }
 avian2d = "0.2"
+bevy_egui = "0.33.0"
+bevy-inspector-egui = "0.30.0"
+egui_dock = "0.16.0"
+
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3

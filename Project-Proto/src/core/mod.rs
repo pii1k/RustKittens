@@ -1,13 +1,13 @@
-mod camera;
 mod environment;
 mod player;
+mod ui;
 
 use bevy::prelude::*;
 
-use camera::components::CameraPlugin;
-use environment::components::EnvironmentPlugin;
-use player::components::PlayerPlugin;
+use environment::EnvironmentPlugin;
+use player::PlayerPlugin;
+use ui::player_hud::PlayerHUDPlugin;
 
 pub fn plugin(app: &mut App) {
-    app.add_plugins((EnvironmentPlugin, CameraPlugin, PlayerPlugin));
+    app.add_plugins((EnvironmentPlugin, PlayerPlugin, PlayerHUDPlugin));
 }
