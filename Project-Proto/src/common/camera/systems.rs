@@ -2,14 +2,13 @@ use super::components::*;
 use bevy::prelude::*;
 
 pub fn setup_camera(mut commands: Commands) {
-    commands
-        .spawn(Camera2d::default())
-        .insert(StickedCameraComponent {
-            target_index: 0,
-            is_sticked: false,
-        });
+    commands.spawn(Camera2d).insert(StickedCameraComponent {
+        target_index: 0,
+        is_sticked: false,
+    });
 }
 
+#[allow(clippy::type_complexity)]
 pub fn update_sticked_camera(
     time: Res<Time>,
     mut queries: ParamSet<(
