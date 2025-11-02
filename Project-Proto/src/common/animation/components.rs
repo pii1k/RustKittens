@@ -8,6 +8,7 @@ pub struct AnimationController<S: AnimationState> {
     pub frame_timer: Timer,
     pub current_frame_idx: usize,
     pub direction: Direction8,
+    pub is_finished: bool,
 }
 
 impl<S: AnimationState> AnimationController<S> {
@@ -17,6 +18,20 @@ impl<S: AnimationState> AnimationController<S> {
             direction,
             current_frame_idx: 0,
             frame_timer: Timer::from_seconds(0.1, TimerMode::Repeating),
+            is_finished: false,
+        }
+    }
+
+    pub fn is_animation_finished(&self) -> bool {
+        self.is_finished
+    }
+
+    pub fn change_state(&mut self, new_state: S) {
+        if self.state != new_state {
+            self.state = new_state;
+            self.current_frame_idx = 0;
+            self.is_finished = false;
+            self.frame_timer.reset();
         }
     }
 }
@@ -63,8 +78,56 @@ impl AnimationSet {
     }
 }
 
-pub trait AnimationState: Component + Clone + PartialEq + Eq + Hash {
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum LowerBodyState {
+    Idle,
+    Walk,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum UpperBodyState {
+    Normal,
+    Attack,
+}
+
+impl UpperBodyState {
+    pub fn is_non_looping(&self) -> bool {
+        matches!(self, Self::Attack)
+    }
+}
+
+#[derive(Component, Debug, Clone, PartialEq)]
+pub struct AnimationLayers {
+    pub lower_body: LowerBodyState,
+    pub upper_body: UpperBodyState,
+}
+
+impl AnimationLayers {
+    pub fn new(lower: LowerBodyState, upper: UpperBodyState) -> Self {
+        Self {
+            lower_body: lower,
+            upper_body: upper,
+        }
+    }
+}
+
+pub trait AnimationState: Component + PartialEq {
     fn clip_name(&self) -> &str;
+}
+
+impl AnimationState for AnimationLayers {
+    fn clip_name(&self) -> &str {
+        match (&self.lower_body, &self.upper_body) {
+            // Normal 상태
+            (LowerBodyState::Idle, UpperBodyState::Normal) => "idle",
+            (LowerBodyState::Walk, UpperBodyState::Normal) => "walk",
+
+            // Attack 상태
+            (LowerBodyState::Idle, UpperBodyState::Attack) => "attack_fire",
+            // TODO: 아직은 attack run 밖에 sprite가 없음 ㅠ
+            (LowerBodyState::Walk, UpperBodyState::Attack) => "attack_run",
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
