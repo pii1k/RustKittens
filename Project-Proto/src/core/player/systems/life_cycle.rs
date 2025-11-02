@@ -1,15 +1,9 @@
 use bevy::prelude::*;
 
-use crate::{
-    common::{
-        animation::components::{AnimationController, Direction8},
-        camera::components::{StickedCameraComponent, StickedTargetComponent},
-    },
-    core::player::{
-        components::{Player, PlayerMovementState},
-        systems::animation::setup_player_animation,
-    },
-};
+use super::super::components::*;
+use super::animation::*;
+
+use crate::common::{animation::components::*, camera::components::*};
 
 const PLAYER_SCALE: f32 = 2.0;
 
@@ -34,10 +28,13 @@ pub fn spawn_player(
                 ..default()
             },
             Transform::from_xyz(0.0, 0.0, 0.0).with_scale(Vec3::splat(PLAYER_SCALE)),
-            AnimationController::new(PlayerMovementState::Idle, Direction8::South),
+            AnimationController::new(
+                AnimationLayers::new(LowerBodyState::Idle, UpperBodyState::Normal),
+                Direction8::South,
+            ),
             Player {
                 velocity: Vec2::ZERO,
-                health: 100.0,
+                is_aiming: false,
             },
             StickedTargetComponent,
             anim_set,

@@ -1,9 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{
-    common::animation::components::{AnimationClip, AnimationController, AnimationSet},
-    core::player::components::{Player, PlayerMovementState},
-};
+use crate::common::animation::components::{AnimationClip, AnimationSet};
 
 pub fn setup_player_animation(
     asset_server: &AssetServer,
@@ -47,7 +44,7 @@ pub fn setup_player_animation(
         },
     );
 
-    let attack_layout = atlas_assets.add(TextureAtlasLayout::from_grid(
+    let attack_fire_layout = atlas_assets.add(TextureAtlasLayout::from_grid(
         UVec2::new(64, 64),
         8,
         8,
@@ -55,33 +52,51 @@ pub fn setup_player_animation(
         None,
     ));
     anim_set.add_clip(
-        "attack",
+        "attack_fire",
         AnimationClip {
-            image_handle: asset_server.load("player/attack.png"),
-            texture_layout_handle: attack_layout,
+            image_handle: asset_server.load("player/attack_fire.png"),
+            texture_layout_handle: attack_fire_layout,
             frames_per_direction: 8,
-            frame_duration: 0.1,
+            frame_duration: 0.05,
+            looping: false,
+        },
+    );
+
+    let attack_stock_layout = atlas_assets.add(TextureAtlasLayout::from_grid(
+        UVec2::new(64, 64),
+        8,
+        8,
+        None,
+        None,
+    ));
+    anim_set.add_clip(
+        "attack_stock",
+        AnimationClip {
+            image_handle: asset_server.load("player/attack_stock.png"),
+            texture_layout_handle: attack_stock_layout,
+            frames_per_direction: 8,
+            frame_duration: 0.075,
+            looping: false,
+        },
+    );
+
+    let attack_run_layout = atlas_assets.add(TextureAtlasLayout::from_grid(
+        UVec2::new(64, 64),
+        8,
+        8,
+        None,
+        None,
+    ));
+    anim_set.add_clip(
+        "attack_run",
+        AnimationClip {
+            image_handle: asset_server.load("player/attack_run.png"),
+            texture_layout_handle: attack_run_layout,
+            frames_per_direction: 8,
+            frame_duration: 0.075,
             looping: false,
         },
     );
 
     anim_set
-}
-
-pub fn update_player_state(
-    q_player: Single<(&Player, &mut AnimationController<PlayerMovementState>), With<Player>>,
-) {
-    let (player, mut anim_controller) = q_player.into_inner();
-
-    if player.health < 50.0 && anim_controller.state != PlayerMovementState::Hurt {
-        anim_controller.state = PlayerMovementState::Hurt;
-    }
-
-    if player.velocity != Vec2::ZERO {
-        if anim_controller.state != PlayerMovementState::Walk {
-            anim_controller.state = PlayerMovementState::Walk;
-        }
-    } else if anim_controller.state != PlayerMovementState::Idle {
-        anim_controller.state = PlayerMovementState::Idle;
-    }
 }
