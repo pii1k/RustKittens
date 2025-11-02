@@ -15,7 +15,7 @@ pub fn handle_animation_state_change<S: AnimationState>(mut query: AnimationChan
         if sprite.image != clip.image_handle {
             sprite.image = clip.image_handle.clone();
 
-            let row = anim_controller.direction as usize;
+            let row = anim_controller.direction.clone() as usize;
             let initial_idx = row * clip.frames_per_direction;
 
             sprite.texture_atlas = Some(TextureAtlas {
@@ -58,7 +58,7 @@ pub fn animate_sprites<S: AnimationState>(
                 anim_controller.current_frame_idx = next_frame;
             }
 
-            let row = anim_controller.direction as usize;
+            let row = anim_controller.direction.clone() as usize;
             let idx = row * clip.frames_per_direction + anim_controller.current_frame_idx;
 
             if let Some(ref mut atlas) = sprite.texture_atlas {

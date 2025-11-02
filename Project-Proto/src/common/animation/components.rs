@@ -130,7 +130,7 @@ impl AnimationState for AnimationLayers {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Direction8 {
     East = 0,
     SouthEast = 1,
@@ -164,6 +164,19 @@ impl Direction8 {
             6 => Self::South,     // 270°
             7 => Self::SouthEast, // 315°
             _ => Self::South,
+        }
+    }
+
+    pub fn to_vec2(&self) -> Vec2 {
+        match self {
+            Self::North => Vec2::new(0.0, 1.0),
+            Self::South => Vec2::new(0.0, -1.0),
+            Self::West => Vec2::new(-1.0, 0.0),
+            Self::East => Vec2::new(1.0, 0.0),
+            Self::NorthWest => Vec2::new(-1.0, 1.0).normalize(),
+            Self::NorthEast => Vec2::new(1.0, 1.0).normalize(),
+            Self::SouthWest => Vec2::new(-1.0, -1.0).normalize(),
+            Self::SouthEast => Vec2::new(1.0, -1.0).normalize(),
         }
     }
 }

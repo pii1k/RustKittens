@@ -1,7 +1,8 @@
+use avian2d::prelude::*;
 use bevy::prelude::*;
 
 use super::super::components::*;
-use crate::common::animation::components::*;
+use crate::{common::animation::components::*, core::weapon::components::Projectile};
 
 const CURSOR_DISPLACEMENT: f32 = 5.0;
 
@@ -41,10 +42,18 @@ pub fn aim_at_cursor(
 }
 
 pub fn shoot(
+    mut commands: Commands,
     mouse_input: Res<ButtonInput<MouseButton>>,
-    q_player: Single<(&Player, &mut AnimationController<AnimationLayers>), With<Player>>,
+    q_player: Single<
+        (
+            &Player,
+            &Transform,
+            &mut AnimationController<AnimationLayers>,
+        ),
+        With<Player>,
+    >,
 ) {
-    let (player, mut anim_controller) = q_player.into_inner();
+    let (player, transform, mut anim_controller) = q_player.into_inner();
 
     if anim_controller.state.upper_body != UpperBodyState::Normal {
         return;
@@ -54,9 +63,34 @@ pub fn shoot(
         return;
     }
 
-    if mouse_input.just_pressed(MouseButton::Left) {
-        let mut new_layers = anim_controller.state.clone();
-        new_layers.upper_body = UpperBodyState::Attack;
-        anim_controller.change_state(new_layers);
+    if !mouse_input.just_pressed(MouseButton::Left) {
+        return;
     }
+
+    let mut new_layers = anim_controller.state.clone();
+    new_layers.upper_body = UpperBodyState::Attack;
+    anim_controller.change_state(new_layers);
+
+    let shoot_dir = anim_controller.direction.to_vec2();
+    let angle = shoot_dir.y.atan2(shoot_dir.x);
+
+    let spawn_offset = shoot_dir * 30.0;
+    let spawn_pos = transform.translation.truncate() + spawn_offset;
+
+    commands.spawn((
+        Name::new("bullet"),
+        Projectile::default(),
+        Sprite {
+            color: Color::srgb(1.0, 0.8, 0.2),
+            custom_size: Some(Projectile::default().size),
+            ..default()
+        },
+        Transform::from_translation(spawn_pos.extend(1.0))
+            .with_rotation(Quat::from_rotation_z(angle)),
+        RigidBody::Dynamic,
+        Collider::rectangle(Projectile::default().size.x, Projectile::default().size.y),
+        LinearVelocity(shoot_dir * Projectile::default().speed),
+        GravityScale(0.0),
+        LockedAxes::ROTATION_LOCKED,
+    ));
 }
