@@ -44,6 +44,8 @@ pub fn aim_at_cursor(
 pub fn shoot(
     mut commands: Commands,
     mouse_input: Res<ButtonInput<MouseButton>>,
+    q_window: Query<&Window, With<Window>>,
+    q_camera: Single<(&Camera, &GlobalTransform), With<Camera2d>>,
     q_player: Single<
         (
             &Player,
@@ -63,7 +65,7 @@ pub fn shoot(
         return;
     }
 
-    if !mouse_input.just_pressed(MouseButton::Left) {
+    if !mouse_input.pressed(MouseButton::Left) {
         return;
     }
 
@@ -71,11 +73,31 @@ pub fn shoot(
     new_layers.upper_body = UpperBodyState::Attack;
     anim_controller.change_state(new_layers);
 
-    let shoot_dir = anim_controller.direction.to_vec2();
-    let angle = shoot_dir.y.atan2(shoot_dir.x);
+    let window = q_window.single();
+    let (camera, camera_transform) = *q_camera;
+    let player_pos = transform.translation.truncate();
 
-    let spawn_offset = shoot_dir * 30.0;
-    let spawn_pos = transform.translation.truncate() + spawn_offset;
+    let shoot_dir = if let Some(cursor_pos) = window.cursor_position()
+        && let Ok(cursor_world_pos) = camera.viewport_to_world_2d(camera_transform, cursor_pos)
+    {
+        (cursor_world_pos - player_pos).normalize_or_zero()
+    } else {
+        anim_controller.direction.to_vec2()
+    };
+
+    if shoot_dir == Vec2::ZERO {
+        return;
+    }
+
+    let angle = shoot_dir.y.atan2(shoot_dir.x);
+    let mut spawn_offset = shoot_dir * 30.0;
+    if shoot_dir.x < 0.0 {
+        spawn_offset.x -= 5.0;
+    } else {
+        spawn_offset.x += 5.0;
+    }
+    spawn_offset.y += 10.0;
+    let spawn_pos = player_pos + spawn_offset;
 
     commands.spawn((
         Name::new("bullet"),
