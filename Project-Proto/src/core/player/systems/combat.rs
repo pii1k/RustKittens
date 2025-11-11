@@ -11,7 +11,12 @@ pub fn aim_at_cursor(
     q_window: Query<&Window, With<Window>>,
     q_camera: Single<(&Camera, &GlobalTransform), With<Camera2d>>,
     q_player: Single<(&Transform, &mut AnimationController<PlayerMovementState>), With<Player>>,
+    mouse_input: Res<ButtonInput<MouseButton>>,
 ) {
+    if !mouse_input.pressed(MouseButton::Right) {
+        return;
+    }
+
     let window = q_window.single();
     let (camera, camera_transform) = *q_camera;
 

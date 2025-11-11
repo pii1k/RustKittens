@@ -1,10 +1,10 @@
-pub mod components;
-mod systems;
-
-use crate::common::animation::systems::{animate_sprites, handle_animation_state_change};
+use crate::common::animation::systems::*;
 use bevy::prelude::*;
 use components::*;
 use systems::{animation::*, combat::*, life_cycle::*, movement::*};
+
+pub mod components;
+mod systems;
 
 pub struct PlayerPlugin;
 impl Plugin for PlayerPlugin {
@@ -18,6 +18,6 @@ impl Plugin for PlayerPlugin {
                     animate_sprites::<PlayerMovementState>,
                 ),
             )
-            .add_systems(Update, (aim_at_cursor, shoot, move_player));
+            .add_systems(Update, (move_player, aim_at_cursor, shoot).chain());
     }
 }

@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::{
-    common::animation::components::AnimationController,
+    common::animation::components::{AnimationController, Direction8},
     core::player::components::{Player, PlayerMovementState},
 };
 
@@ -40,6 +40,9 @@ pub fn move_player(
 
     if direction != Vec2::ZERO {
         direction = direction.normalize();
+
+        anim_controller.direction = Direction8::from_velocity(player.velocity);
+
         direction.y /= 2.0;
 
         let movement = direction * PLAYER_SPEED * time.delta_secs();
