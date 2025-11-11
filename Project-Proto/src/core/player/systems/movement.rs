@@ -1,9 +1,7 @@
 use bevy::prelude::*;
 
-use crate::{
-    common::animation::components::{AnimationController, Direction8},
-    core::player::components::{Player, PlayerMovementState},
-};
+use super::super::components::*;
+use crate::common::animation::components::*;
 
 const PLAYER_SPEED: f32 = 150.0;
 
@@ -14,7 +12,7 @@ pub fn move_player(
         (
             &mut Player,
             &mut Transform,
-            &mut AnimationController<PlayerMovementState>,
+            &mut AnimationController<AnimationLayers>,
         ),
         With<Player>,
     >,
@@ -38,7 +36,9 @@ pub fn move_player(
 
     player.velocity = direction.normalize_or_zero();
 
-    if direction != Vec2::ZERO {
+    let is_moving = direction.length() > 0.0;
+
+    if is_moving {
         direction = direction.normalize();
 
         anim_controller.direction = Direction8::from_velocity(player.velocity);
@@ -47,7 +47,24 @@ pub fn move_player(
 
         let movement = direction * PLAYER_SPEED * time.delta_secs();
         player_transform.translation += movement.extend(0.0);
+    }
+
+    update_lower_body_state(&mut anim_controller, is_moving);
+}
+
+fn update_lower_body_state(
+    anim_controller: &mut AnimationController<AnimationLayers>,
+    is_moving: bool,
+) {
+    let new_lower = if is_moving {
+        LowerBodyState::Walk
     } else {
-        anim_controller.current_frame_idx = 0;
+        LowerBodyState::Idle
+    };
+
+    if anim_controller.state.lower_body != new_lower {
+        let mut new_layers = anim_controller.state.clone();
+        new_layers.lower_body = new_lower;
+        anim_controller.change_state(new_layers);
     }
 }
